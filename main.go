@@ -7,6 +7,7 @@ import (
 	"io"
 	"net"
 	"os"
+	"strings"
 	"sync"
 )
 
@@ -58,7 +59,7 @@ func doLookups(wg *sync.WaitGroup, work chan string, verbose bool) {
 			continue
 		}
 		for _, v := range hosts {
-			fmt.Println(v)
+			fmt.Println(strings.TrimSuffix(v, "."))
 		}
 	}
 	wg.Done()
