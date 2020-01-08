@@ -31,7 +31,7 @@ func main() {
 	defer input.Close()
 
 	work := make(chan string)
-	go makeWork(input, work)
+	go makeWork(input, work, *verbose)
 
 	wg := &sync.WaitGroup{}
 	for i := 0; i < int(*workers); i++ {
@@ -41,10 +41,13 @@ func main() {
 	wg.Wait()
 }
 
-func makeWork(input io.Reader, work chan string) {
+func makeWork(input io.Reader, work chan string, verbose bool) {
 	s := bufio.NewScanner(input)
 	for s.Scan() {
 		work <- s.Text()
+	}
+	if s.Err() != nil && verbose {
+		fmt.Fprintf(os.Stderr, "error while scanning input: %v\n", s.Err())
 	}
 	close(work)
 }
